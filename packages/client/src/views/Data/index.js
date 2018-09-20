@@ -7,12 +7,14 @@ import * as S from './styles'
 import { Table } from '../../components'
 import withLayout from '../../hoc/withLayout'
 
-class App extends Component {
+class Page extends Component {
   getExpense(){
     this.props.asyncSetExpenses()
   }
   componentDidMount() {
-    this.getExpense()
+    if(!this.expenses) {
+      this.getExpense()
+    }
   }
   render() {
     const { expenses } = this.props
@@ -54,4 +56,4 @@ const mapStateToProps = state => ({
 export default connect(
   mapStateToProps,
   actions,
-)(withLayout(App))
+)(withLayout(Page))

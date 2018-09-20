@@ -1,5 +1,6 @@
 {
   "devDependencies": {
+    "concurrently": "^4.0.1",
     "eslint": "^5.6.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-plugin-import": "^2.14.0",
@@ -8,8 +9,9 @@
     "lerna": "^2.11.0"
   },
   "scripts": {
-    "init": "npm install && lerna bootstrap",
+    "install": "npm install && lerna bootstrap",
     "server": "cd packages/server/ && npm run server",
-    "client": "cd packages/client/ && npm run start"
+    "client": "cd packages/client/ && npm run start",
+    "start": "concurrently --kill-others \"npm run server\" \"npm run client\""
   }
 }
