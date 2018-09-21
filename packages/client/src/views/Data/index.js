@@ -12,7 +12,7 @@ class Page extends Component {
     this.props.asyncSetExpenses()
   }
   componentDidMount() {
-    if(!this.expenses) {
+    if(!this.props.expenses || !this.props.expenses.length) {
       this.getExpense()
     }
   }
