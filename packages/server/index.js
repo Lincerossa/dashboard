@@ -2,57 +2,81 @@
 var express = require('express');
 var app = express();
 var mongoose = require('mongoose');
+var md5 = require('md5')
+
+var xlsx = require('node-xlsx');
+var fs = require('fs');
 
 
+var multer  = require('multer');
+var storage = multer.memoryStorage()
 
-var getJson = require('./getJson')
-var Expense = require('./mongo/schemas/expense')
+var expense = require('./mongo/schemas/expense')
 
-mongoose.connect('mongodb://127.0.0.1/27017')
+mongoose.connect('mongodb://127.0.0.1/27017') 
 var db = mongoose.connection;
-
 db.on('error', console.error.bind(console, 'connection error:'));
 
 
-db.once('open', function() {
 
-  var expenseSchema = new mongoose.Schema(Expense);
+var expenseSchema = new mongoose.Schema(expense);
+var Expense = mongoose.model('Expense', expenseSchema)
+
+
+
+var upload = multer({ storage });
+app.post('/post/expenses', upload.single('expenses'), async (req, res) => {
   
-  var Expense = mongoose.model('Expense', expenseSchema)
+  const file = req.file
 
-  var expenseFirst = new Expense({
-    Data: "14/09/2018",
-    Valuta: "13/09/212018",
-    Importo: "-13.61",
-    Causale: "ACaassasdU. POS DEBITO/PREPAG. NO DB  DEL  13.09.2018  18.41  PRESSO  PAM LOCAL  MILANO"
+  const obj = xlsx.parse(file.buffer)
+
+  const myData = obj[0]
+    .data.slice(1)
+    .map(row => ({
+      data: row[0],
+      importo: row[2],
+      causale: row[3],
+      md5: md5(`${row.join('|')}`),
+      cazzone: true,
+    }));
+
+  const oldData = await Expense.find(function(err, expenses) {
+    if (err) return console.error(err);
+    return expenses
   })
 
-  expenseFirst.save(function (err, expense) {
-    if (err) return console.error(err);
-    console.log("salvata", expense)
-  });
+  for (let i = 0; i < myData.length; i++) {
 
-  app.get('/', async (req, res) => {
-    const json = await getJson()
-    res.json(json);
-  });
-
-
-  app.get('/mongo', async (req, res) => {
-    console.log("start mongo")
-    Expense.find(function (err, expense) {
-      console.log("expense", expense)
-      console.log("err", expense)
+    if (typeof oldData.find(e => e.md5 === myData[i].md5) === 'undefined') {
+      const newExpense = new Expense(myData[i])
+      newExpense.save(function (err, expense) {
+        if (err) return
+      });
+    }
+  }
+  
+  var data = {
+    data: await Expense.find(function(err, expenses) {
       if (err) return console.error(err);
-      console.log(expense);
+      return expenses
     })
-    console.log("fine mongo")
-    const json = await getJson()
-    res.json(json);
-  });
-
-  app.listen(3000, function () {
-    console.log('Example app listening on port 3002!');
-  });
-
+  }
+  res.json(data);
 });
+
+app.get('/get/expenses', async (req, res) => {
+
+  const data =  await Expense.find(function(err, expenses) {
+    if (err) return console.error(err);
+    return expenses
+  })
+
+  res.json(data);
+
+})
+
+app.listen(3005, function () {
+  console.log('Example app listening on port 3005 !');
+});
+
