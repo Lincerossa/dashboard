@@ -10,7 +10,9 @@ function setExpenses(payload) {
 
 export const asyncSetExpenses = () => {
   return async dispatch => {
-    const expenses = await axios.get("http://localhost:3002/")
+
+    const expenses = await axios.get("http://localhost:3005/get/expenses")
+
     dispatch(setExpenses(expenses.data))
   }
 }

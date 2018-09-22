@@ -9,7 +9,7 @@
     "lerna": "^2.11.0"
   },
   "scripts": {
-    "install": "npm install && lerna bootstrap",
+    "init": "npm install && lerna bootstrap",
     "server": "cd packages/server/ && npm run server",
     "client": "cd packages/client/ && npm run start",
     "start": "concurrently --kill-others \"npm run server\" \"npm run client\""
