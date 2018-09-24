@@ -5,9 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "generateCsv": "node generateCsv",
     "server": "forever start index.js -w --watchedDirectory .",
-    "mongoloide": "mongod --dbpath=./db"
+    "mongo_set_db_path": "mongod --dbpath=./db"
   },
   "author": "",
   "license": "ISC",

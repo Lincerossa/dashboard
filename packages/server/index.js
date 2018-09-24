@@ -3,16 +3,11 @@ var express = require('express');
 var app = express();
 var mongoose = require('mongoose');
 var md5 = require('md5')
-
 var xlsx = require('node-xlsx');
-var fs = require('fs');
-
-
 var multer  = require('multer');
 var storage = multer.memoryStorage()
 
 var expense = require('./mongo/schemas/expense')
-
 mongoose.connect('mongodb://127.0.0.1/27017') 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -38,7 +33,6 @@ app.post('/post/expenses', upload.single('expenses'), async (req, res) => {
       importo: row[2],
       causale: row[3],
       md5: md5(`${row.join('|')}`),
-      cazzone: true,
     }));
 
   const oldData = await Expense.find(function(err, expenses) {
@@ -66,14 +60,11 @@ app.post('/post/expenses', upload.single('expenses'), async (req, res) => {
 });
 
 app.get('/get/expenses', async (req, res) => {
-
   const data =  await Expense.find(function(err, expenses) {
     if (err) return console.error(err);
     return expenses
   })
-
   res.json(data);
-
 })
 
 app.listen(3005, function () {
