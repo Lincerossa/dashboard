@@ -17,4 +17,5 @@ export const PageInner = styled.div`
 
 export const ButtonWrapper = styled.div`
   margin: 1rem;
+  color: blue;
 `

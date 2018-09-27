@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import * as actions from '../../redux/expenses/actions'
 import { getExpenses } from '../../redux/expenses/reducer'
 import * as S from './styles'
-import { Table, Button } from '../../components'
+import { Table } from '../../components'
 import withLayout from '../../hoc/withLayout'
 
 class Page extends Component {

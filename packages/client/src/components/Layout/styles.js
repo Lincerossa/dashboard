@@ -1,64 +1,115 @@
 import styled from 'styled-components'
 
-const layoutHeaderHeight = '50px'
+const menuWidth = '100px'
+const menuHeaderHeight = '3rem'
 
 export const Layout = styled.div`
-  padding-top: ${layoutHeaderHeight};
-  min-height: ${`calc(100vh - ${layoutHeaderHeight})`};
+  padding-left: ${menuWidth};
+  padding-top: ${menuHeaderHeight};
 `
-
-
-export const Header = styled.div`
+export const LayoutHeader = styled.div`
+  background-color: ${props => props.theme.colors.c};
   position: fixed;
-  z-index: 1;
-  top:0;
-  left: 0;
+  top: 0;
+  left: ${menuWidth};
+  height: ${menuHeaderHeight};
   right: 0;
-  height: ${layoutHeaderHeight};
+  z-index: 1;
   display: flex;
   align-items: center;
-  padding: 0 1rem;
+  padding-left: .5rem;
   i{
-    color: ${props => props.theme.colors.d};
+    color: white;
     font-size: 2rem;
+  }
+`
+
+export const MenuWrapper = styled.div`
+  position: fixed;
+  
+  z-index: 2;
+  top:0;
+  left: 0;
+  bottom: 0;
+  transition: width .2s ease-in-out;
+  width: ${props => props.isOpen ? '200px' : menuWidth};
+`
+
+export const MenuLinkTitle = styled.div`
+  text-transform: uppercase;
+  color: ${props => props.isActive ? props.theme.colors.aa : ''};
+  font-family: ${props => props.theme.fonts.sansSerif};
+`
+
+export const MenuLink = styled.div`
+  margin-bottom: .5rem;
+
+  a{
+    text-decoration: none;
+    color: inherit;
+    font-family: ${props => props.theme.fonts.sansSerif};
+    font-size: .75rem;
+  }
+
+  ${
+    props => props.isActive 
+
+    ? 
+      `
+      a{
+        color: ${props.theme.colors.a} !important;
+      }
+      `
+    : 
+      `
+      `
+  }
+
+
+  &:last-child{
+    margin-bottom: 0;
+  }
+  &:hover{
+    a{
+      color: ${props => props.theme.colors.a};
+    }
   }
 
 `
 
 export const Menu = styled.div`
-  display: flex;
-  display: flex;
-    justify-content: space-between;
-    flex-grow: 1;
+  height: 100%;
+  background: white;
+  padding: 1rem;
+  box-shadow: 6px 0px 4px 0px rgba(0,0,0,0.06);
 `
 
-export const Group = styled.div`
-  display: flex;
+export const MenuLinks = styled.div`
+  margin-top: .5rem;
 `
 
-export const IconWrapper = styled.div`
+export const MenuLinksGroup = styled.div`
+
   position: relative;
-  &:before{
-
-    ${props => props.isActive ? `
-      content: "";
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      height: 0;
-      background-color: ${props.theme.colors.a};
-      height: 2px;
-    ` : ''};
+  margin-bottom: 1rem;
+  i{
+    font-size: .75rem;
   }
 `
+
+
 export const Content = styled.div`
 `
 
 export const ButtonWrapper = styled.div`
-
 `
 
-
-
-
+export const ToggleMenu = styled.div`
+  height: ${menuHeaderHeight};
+  background: ${props => props.theme.colors.a};
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding-left: 1rem;
+`
