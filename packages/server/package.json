@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "server": "forever start index.js -w --watchedDirectory .",
+    "server": "node index.js -w --watchedDirectory .",
     "mongo_set_db_path": "mongod --dbpath=./db"
   },
   "author": "",

@@ -12,6 +12,7 @@
     "init": "npm install && lerna bootstrap",
     "server": "cd packages/server/ && npm run server",
     "client": "cd packages/client/ && npm run start",
+    "mongo": "cd packages/server/ && npm run mongo_set_db_path",
     "start": "concurrently --kill-others \"npm run server\" \"npm run client\""
   }
 }

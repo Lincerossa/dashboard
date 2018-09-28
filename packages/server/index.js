@@ -6,26 +6,22 @@ var md5 = require('md5')
 var xlsx = require('node-xlsx');
 var multer  = require('multer');
 var storage = multer.memoryStorage()
+var Query = require("./mongo/Query")
 
-var expense = require('./mongo/schemas/expense')
+// serve solo x controllare la connessione
 mongoose.connect('mongodb://127.0.0.1/27017') 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 
+async function handleResource(req, res) {
+  const { resource } = req.params
+  const data = await Query.get[resource]()
+  return res.json(data)
+}
 
-
-var expenseSchema = new mongoose.Schema(expense);
-var Expense = mongoose.model('Expense', expenseSchema)
-
-
-
-var upload = multer({ storage });
-app.post('/post/expenses', upload.single('expenses'), async (req, res) => {
-  
-  const file = req.file
-
+app.post('/post/expenses', multer({ storage }).single('expenses'), async (req, res) => {
+  const { file } = req
   const obj = xlsx.parse(file.buffer)
-
   const myData = obj[0]
     .data.slice(1)
     .map(row => ({
@@ -34,38 +30,27 @@ app.post('/post/expenses', upload.single('expenses'), async (req, res) => {
       causale: row[3],
       md5: md5(`${row.join('|')}`),
     }));
-
-  const oldData = await Expense.find(function(err, expenses) {
-    if (err) return console.error(err);
-    return expenses
-  })
-
   for (let i = 0; i < myData.length; i++) {
-
-    if (typeof oldData.find(e => e.md5 === myData[i].md5) === 'undefined') {
-      const newExpense = new Expense(myData[i])
-      newExpense.save(function (err, expense) {
-        if (err) return
-      });
+    const expense = await Query.get.expense(myData[i])
+    if (!expense) {
+      await Query.post.expense(myData[i])
     }
   }
-  
-  var data = {
-    data: await Expense.find(function(err, expenses) {
-      if (err) return console.error(err);
-      return expenses
-    })
-  }
-  res.json(data);
+  res.json(await Query.get.expenses());
 });
 
-app.get('/get/expenses', async (req, res) => {
-  const data =  await Expense.find(function(err, expenses) {
-    if (err) return console.error(err);
-    return expenses
+
+app.get('/set/segments', async (req, res) => {
+  await Query.post.segment({
+    id: 1,
+    text: 'first segment',
   })
-  res.json(data);
+  res.json({
+    res: true,
+  });
 })
+
+app.get(`/get/:resource(expenses|segments)`, handleResource)
 
 app.listen(3005, function () {
   console.log('Example app listening on port 3005 !');
