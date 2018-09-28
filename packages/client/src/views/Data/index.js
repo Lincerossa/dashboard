@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios'
 import { connect } from 'react-redux'
 import * as actions from '../../redux/expenses/actions'
-import { getExpenses } from '../../redux/expenses/reducer'
+import { getExpenses, getExpensesStatus } from '../../redux/expenses/reducer'
 import * as S from './styles'
 import { Table } from '../../components'
 import withLayout from '../../hoc/withLayout'
@@ -12,29 +12,32 @@ class Page extends Component {
     super()
     this.form = React.createRef()
     this.input = React.createRef()
-    this.state={
-      loading: false,
-      file: false,
+    this.state = {
+      isUploading: null,
+      file: null,
     }
     this.handleFormSubmit = this.handleFormSubmit.bind(this)
     this.handleChangeFile = this.handleChangeFile.bind(this)
     this.handleLoadData = this.handleLoadData.bind(this)
   }
-  getExpense(){
-    this.props.asyncSetExpenses()
+
+  componentDidMount() {
+    this.handleLoadData()
   }
+
+
   async handleFormSubmit(e){
     e.preventDefault()
     const { file, loading } = this.state
     if(file && !loading) {
 
       this.setState({
-        loading: true,
+        isUploading: true,
       })
       const formData = new FormData()
       formData.append('expenses', file)
 
-      const post = await axios.post(
+      await axios.post(
         "http://localhost:3005/post/expenses", 
         formData,
         { 
@@ -48,7 +51,7 @@ class Page extends Component {
       
     }
     this.setState({
-      loading: false
+      isUploading: false
     })
   }
 
@@ -60,19 +63,13 @@ class Page extends Component {
   }
 
   async handleLoadData(){
-    this.getExpense()
+    const { asyncSetExpenses } = this.props
+    asyncSetExpenses()
   }
 
-  async componentDidMount() {
-    this.setState({loading: true})
-    if(!this.props.expenses || !this.props.expenses.length) {
-      await this.handleLoadData()
-    }
-    this.setState({loading: false})
-  }
   render() {
-    const { expenses } = this.props
-    const { loading, file } = this.state
+    const { expenses, status } = this.props
+    const { isUploading } = this.state
 
     return (
       <div>
@@ -92,9 +89,9 @@ class Page extends Component {
           >carica file</button>
         </S.FormUpload>
         {
-          (loading)
+          (status === 'LOADING')
             ? <S.Loading>Caricamento in corso</S.Loading>
-            : <Table 
+            : expenses && expenses.length && <Table 
                 data={expenses} 
                 defaultPageSize={expenses.length}
                 columns = {[{
@@ -121,7 +118,8 @@ class Page extends Component {
 }
 
 const mapStateToProps = state => ({
-  expenses: getExpenses(state)
+  expenses: getExpenses(state),
+  status: getExpensesStatus()
 })
 
 export default connect(

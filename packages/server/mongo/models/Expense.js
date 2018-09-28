@@ -1,5 +1,4 @@
-var mongoose = require('mongoose');
-
+const mongoose = require('mongoose')
 
 const expense = {
   data: Date,
@@ -9,8 +8,5 @@ const expense = {
   cazzone: Boolean,
 }
 
-var expenseSchema = new mongoose.Schema(expense);
-var Expense = mongoose.model('Expense', expenseSchema)
-
-
-module.exports = Expense
+const expenseSchema = new mongoose.Schema(expense)
+module.exports = mongoose.model('Expense', expenseSchema)

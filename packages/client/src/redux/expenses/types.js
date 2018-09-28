@@ -1,1 +1,3 @@
 export const EXPENSES_SET = 'EXPENSES_SET'
+export const EXPENSES_LOAD = 'EXPENSES_LOAD'
+export const EXPENSES_LOADED = 'EXPENSES_LOADED'

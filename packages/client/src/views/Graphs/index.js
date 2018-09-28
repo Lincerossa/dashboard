@@ -1,45 +1,32 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import * as actions from '../../redux/expenses/actions'
-import { getExpenses } from '../../redux/expenses/reducer'
+import { getExpenses, getExpensesStatus } from '../../redux/expenses/reducer'
 import * as S from './styles'
 import { LineSeries } from '../../components'
 import withLayout from '../../hoc/withLayout'
 
-
-
-
-
-
 class Page extends Component {
   constructor() {
     super()
-    this.state={
-      loading: false,
-    }
     this.handleLoadData = this.handleLoadData.bind(this)
   }
-  getExpense(){
-    this.props.asyncSetExpenses()
+
+  componentDidMount() {
+    this.handleLoadData()
   }
 
-  async handleLoadData(){
-    this.getExpense()
+  handleLoadData(){
+    const { asyncSetExpenses } = this.props
+    asyncSetExpenses()
   }
 
-  async componentDidMount() {
-    this.setState({loading: true})
-    if(!this.props.expenses || !this.props.expenses.length) {
-      await this.handleLoadData()
-    }
-    this.setState({loading: false})
-  }
   render() {
-    const { expenses } = this.props
-    const { loading } = this.state
+    const { expenses, status } = this.props
 
-    console.log("dateprima", expenses)
     const data = expenses && 
+      expenses.length > 0 &&
+      status !== 'LOADING' &&
       expenses
       .filter(expense => {
         const isDate = typeof new Date(expense.data).getTime() === 'number'
@@ -59,7 +46,7 @@ class Page extends Component {
       <div>
 
         {
-          (loading)
+          (status === 'LOADING')
             ? <S.Loading>Caricamento in corso</S.Loading>
             : <LineSeries data={data} />
         }
@@ -69,7 +56,8 @@ class Page extends Component {
 }
 
 const mapStateToProps = state => ({
-  expenses: getExpenses(state)
+  expenses: getExpenses(state),
+  status: getExpensesStatus()
 })
 
 export default connect(
