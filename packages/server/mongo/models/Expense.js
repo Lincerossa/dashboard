@@ -5,7 +5,6 @@ const expense = {
   importo: Number,
   causale: String,
   md5: String,
-  cazzone: Boolean,
 }
 
 const expenseSchema = new mongoose.Schema(expense)

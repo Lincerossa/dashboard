@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
 const segment = {
-  id: Number,
   text: String,
+  budget: Number,
 }
 
 const segmentSchema = new mongoose.Schema(segment)

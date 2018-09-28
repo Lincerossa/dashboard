@@ -1,4 +1,5 @@
 
+const bodyParser = require('body-parser');
 const express = require('express')
 const mongoose = require('mongoose')
 const md5 = require('md5')
@@ -9,6 +10,10 @@ const Query = require('./mongo/Query')
 
 const app = express()
 const storage = multer.memoryStorage()
+
+
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
 
 
 // serve solo x controllare la connessione
@@ -37,11 +42,11 @@ app.post('/post/expenses', multer({ storage }).single('expenses'), async (req, r
 })
 
 
-app.get('/set/segments', async (req, res) => {
-  await Query.post.segment({
-    id: 1,
-    text: 'first segment',
-  })
+app.post('/post/segment', async (req, res) => {
+
+  const { text, budget } = req.body.data
+
+  await Query.post.segment({ text, budget })
   res.json({
     res: true,
   })
