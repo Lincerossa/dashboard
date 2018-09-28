@@ -5,6 +5,7 @@ import {
   Data,
   Home,
   Graphs,
+  Segments,
 } from "./views"
 
 export default props => (
@@ -22,6 +23,10 @@ export default props => (
       <Route 
         path=":area(/graphs)" 
         component={Graphs}
+      />
+      <Route 
+        path=":area(/segments)" 
+        component={Segments}
       />
     </Switch>
   </BrowserRouter>
