@@ -89,7 +89,7 @@ export const MenuLinks = styled.div`
 `
 
 export const MenuLinksGroup = styled.div`
-
+  cursor: pointer;
   position: relative;
   margin-bottom: 1rem;
   i{

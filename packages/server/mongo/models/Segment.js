@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const segment = {
   text: String,
+  tags: String,
   budget: Number,
 }
 

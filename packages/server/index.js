@@ -44,9 +44,9 @@ app.post('/post/expenses', multer({ storage }).single('expenses'), async (req, r
 
 app.post('/post/segment', async (req, res) => {
 
-  const { text, budget } = req.body.data
-
-  await Query.post.segment({ text, budget })
+  const { text, budget, tags } = req.body.data
+  
+  await Query.post.segment({ text, budget, tags })
   res.json({
     res: true,
   })

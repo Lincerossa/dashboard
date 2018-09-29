@@ -5,23 +5,21 @@ import axios from 'axios'
 import * as S from './styles'
 import withLayout from '../../hoc/withLayout'
 
-
 const validate = values => {
   let errors = {};
-  
   if(!values.text) {
     errors.text = 'Required';
+  }
+  if(!values.tags) {
+    errors.tags = 'Required';
   }
   if(!values.budget) {
     errors.budget = 'Required';
   }
-  
   return errors;
 }
 
-
 class Page extends Component {
-
   constructor(){
     super()
     this.state={
@@ -32,11 +30,9 @@ class Page extends Component {
     this.handleGetSegments = this.handleGetSegments.bind(this)
   }
 
-
   componentDidMount(){
     this.handleGetSegments()
   }
-
 
   async handleGetSegments(){
     this.setState({
@@ -52,7 +48,6 @@ class Page extends Component {
 
   async onSubmit(values, { setSubmitting }) {
     setSubmitting(true)
-
     await axios.post(
       "http://localhost:3005/post/segment", 
       {  
@@ -70,6 +65,7 @@ class Page extends Component {
   render(){
 
     const { status, segments } = this.state
+
     return(
       <div>
         <Formik
@@ -94,6 +90,14 @@ class Page extends Component {
                 value={values.text}
               />
               {errors.text && touched.text && errors.text}
+              <input
+                type="text"
+                name="tags"
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.tags}
+              />
+              {errors.tags && touched.tags && errors.tags}
               <input
                 type="number"
                 name="budget"

@@ -26,7 +26,7 @@ export default class Layout extends Component {
       <S.Layout>
         <S.MenuWrapper isOpen={isOpen}>
             <S.ToggleMenu onClick={this.handleToggleMenu}><i class="material-icons">{isOpen ? 'close': 'menu'}</i></S.ToggleMenu>
-          <Menu {...this.props} isOpen={isOpen} />
+          <Menu {...this.props} isOpen={isOpen} onClick={this.handleToggleMenu} />
         </S.MenuWrapper>
         <S.LayoutHeader>
           <Link to="/">

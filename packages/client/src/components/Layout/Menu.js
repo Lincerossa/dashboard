@@ -6,10 +6,10 @@ import { Link } from 'react-router-dom'
 
 export default props => {
   const area = props.match && props.match.params && props.match.params.area
-  const { isOpen } = props
+  const { isOpen, onClick } = props
   return(
     <S.Menu>
-      <S.MenuLinksGroup>
+      <S.MenuLinksGroup onClick={onClick}>
         <S.MenuLinkTitle isActive={area === '/data'}>data</S.MenuLinkTitle>
           { 
           isOpen && 
@@ -29,7 +29,7 @@ export default props => {
           </React.Fragment>
         }
       </S.MenuLinksGroup>
-      <S.MenuLinksGroup>
+      <S.MenuLinksGroup onClick={onClick}>
         <S.MenuLinkTitle
           isActive={area === '/graphs' || area == 'segments'}
         >grafici</S.MenuLinkTitle>
